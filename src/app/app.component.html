@@ -1,0 +1,13 @@
+<div *ngFor="let line of board; let i = index">
+	<a *ngFor="let item of line; let j = index">
+		<div *ngIf="item != 0; then show else empty"></div>
+		<ng-template #show>
+			<Button (click)="select(item,i,j)" style="width:30px; height:30px">
+        {{item}}
+      </Button>
+		</ng-template>
+		<ng-template #empty>
+			<Button (click)="move(i,j)" style="width:30px; height:30px"></Button>
+		</ng-template>
+	</a>
+</div>
