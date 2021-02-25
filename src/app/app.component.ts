@@ -14,6 +14,7 @@ export class AppComponent {
 
   tempI;
   tempJ;
+  tempChess = 0;
   movingChess;
 
   constructor() {
@@ -51,48 +52,64 @@ export class AppComponent {
 
     //init soldier
     for (var i = 0; i < 8; i++) {
-      this.board[1][i] = 1;
+      this.board[1][i] = 7;
       this.board[6][i] = 1;
     }
 
     //init fortress
-    this.board[0][0] = 2;
-    this.board[0][7] = 2;
+    this.board[0][0] = 8;
+    this.board[0][7] = 8;
     this.board[7][0] = 2;
     this.board[7][7] = 2;
 
     //init horses
-    this.board[0][1] = 3;
-    this.board[0][6] = 3;
+    this.board[0][1] = 9;
+    this.board[0][6] = 9;
     this.board[7][1] = 3;
     this.board[7][6] = 3;
 
     //init minister
-    this.board[0][2] = 4;
-    this.board[0][5] = 4;
+    this.board[0][2] = 10;
+    this.board[0][5] = 10;
     this.board[7][2] = 4;
     this.board[7][5] = 4;
 
     //init king and queen
-    this.board[0][3] = 5;
-    this.board[0][4] = 6;
+    this.board[0][3] = 11;
+    this.board[0][4] = 12;
     this.board[7][3] = 6;
     this.board[7][4] = 5;
   }
 
   selectChess(item, i, j) {
     this.idle = false;
+    this.movingChess = item;
     switch (item) {
       case 1:
-        this.movingChess = 1;
-        if (this.user == 1) {
-          this.board[i - 1][j] = 7;
-          this.tempI = i - 1;
-          this.tempJ = j;
+        if (this.board[i - 1][j] != 0) {
+          this.tempChess = this.board[i - 1][j];
         }
+        this.board[i - 1][j] = 7;
+        this.tempI = i - 1;
+        this.tempJ = j;
         break;
       case 2:
-        //alert("benteng");
+        var step = 0;
+        for(var n = i; n >= 0; n--) {
+          if(this.board[n][j] == 0) {
+            step++;
+          }
+          else if(this.board[n][j] < 7) {
+            break;
+          }
+          else if(this.board[n][j] >= 7) {
+            step++;
+            break;
+          }
+        }
+        for(n = 0; n < step; n++) {
+          this.board[i-1][j] = 7;
+        }
         break;
       case 3:
         //alert("kuda");
@@ -112,25 +129,33 @@ export class AppComponent {
   }
 
   moveChess(i, j) {
-    if (this.user == 1) {
-      if (this.tempI != i && this.tempJ != j) {
-        this.board[this.tempI][this.tempJ] = 0;
-        this.idle = true;
-        return this.selectChess(this.board[i][j], i, j);
-      } else if (this.tempI + 1 == i && this.tempJ == j) {
-        this.board[this.tempI][this.tempJ] = 0;
-        this.idle = true;
-        return;
+    if (this.tempI != i && this.tempJ != j) {
+      if (this.tempChess != 0) {
+        this.board[this.tempI][this.tempJ] = this.tempChess;
+        this.tempChess = 0;
       } else {
-        switch (this.movingChess) {
-          case 1:
-            if (this.user == 1) {
-              this.board[i][j] = this.movingChess;
-              this.movingChess = 0;
-              this.board[i + 1][j] = 0;
-              this.idle = true;
-            }
-        }
+        this.board[this.tempI][this.tempJ] = 0;
+      }
+      this.idle = true;
+      return this.selectChess(this.board[i][j], i, j);
+    } else if (this.tempI + 1 == i && this.tempJ == j) {
+      if (this.tempChess != 0) {
+        this.board[this.tempI][this.tempJ] = this.tempChess;
+        this.tempChess = 0;
+      } else {
+        this.board[this.tempI][this.tempJ] = 0;
+      }
+      this.idle = true;
+      return;
+    } else {
+      switch (this.movingChess) {
+        case 1:
+          if (this.user == 1) {
+            this.board[i][j] = this.movingChess;
+            this.movingChess = 0;
+            this.board[i + 1][j] = 0;
+            this.idle = true;
+          }
       }
     }
   }

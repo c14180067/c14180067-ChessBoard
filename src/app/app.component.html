@@ -4,34 +4,39 @@
 <div *ngFor="let line of board; let i = index">
 	<a *ngFor="let item of line; let j = index">
 
-		<div *ngIf="idle == true; then idleCon else moveCon"></div>
+		<div *ngIf="idle == true; then open else active"></div>
 
-		<ng-template #idleCon>
-			<div *ngIf="item == 0; then clear else filled"></div>
-			<ng-template #clear>
-				<button style="height:30px; width:30px;"></button>
+		<ng-template #open>
+			<div *ngIf="item != 0; then show else clear"></div>
+			<ng-template #show>
+				<button (click)="selectChess(item, i, j)" style="width:30px; height:30px">{{item}}</button>
 			</ng-template>
-			<ng-template #filled>
-				<button (click)="selectChess(item, i, j)" style="height:30px; width:30px">{{item}}</button>
+			<ng-template #clear>
+				<button style="width:30px; height:30px"></button>
 			</ng-template>
 		</ng-template>
 
-		<ng-template #moveCon>
-			<div *ngIf="item == 0; then clear else filled"></div>
-			<ng-template #clear>
-				<button style="height:30px; width:30px;">{{item}}</button>
-			</ng-template>
-			<ng-template #filled>
-				<div *ngIf="item == 7; then path else normal">{{item}}</div>
-				<ng-template #path>
-					<button (click)="moveChess(i, j)" style="height:30px; width:30px; background:black">{{item}}</button>
+		<ng-template #active>
+			<div *ngIf="item == 7; then path else normal"></div>
+			<ng-template #path>
+				<div *ngIf="tempChess != 0 && tempChess < 7; then filled else clear"></div>
+				<ng-template #filled>
+					<button (click)="moveChess(i, j)" style="width:30px; height:30px; background:red">{{item}}</button>
 				</ng-template>
-				<ng-template #normal>
-					<button (click)="moveChess(i, j)" style="height:30px; width:30px;">{{item}}</button>
+				<ng-template #clear>
+					<button (click)="moveChess(i, j)" style="width:30px; height:30px; background:red"></button>
 				</ng-template>
-			</ng-template>
 
+			</ng-template>
+			<ng-template #normal>
+				<div *ngIf="item != 0; then show else clear"></div>
+				<ng-template #show>
+					<button (click)="moveChess(i, j)" style="width:30px; height:30px">{{item}}</button>
+				</ng-template>
+				<ng-template #clear>
+					<button style="width:30px; height:30px"></button>
+				</ng-template>
+			</ng-template>
 		</ng-template>
-
 	</a>
 </div>
